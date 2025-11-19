@@ -1,15 +1,16 @@
 // app/api/records/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { verifyToken } from "@/lib/auth";
+import { getUserFromToken } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
     const token = req.headers.get("authorization")?.split(" ")[1] || "";
-    const decoded = verifyToken(token);
-    if (!decoded) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const user = await getUserFromToken(token);
+    
+    if (!user || user.role?.name !== "Merchandiser") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const creatorId = decoded.id;
+    const creatorId = user.id;
     const body = await req.json();
 
     const today = new Date();
@@ -72,10 +73,11 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   try {
     const token = req.headers.get("authorization")?.split(" ")[1] || "";
-    const decoded = verifyToken(token);
-    if (!decoded) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const user = await getUserFromToken(token);
+    
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const userId = decoded.id;
+    const userId = user.id;
 
     const records = await prisma.record.findMany({
       where: { userId },
