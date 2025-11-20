@@ -9,7 +9,7 @@ export async function verifyAdmin(token: string): Promise<boolean> {
       include: { role: true },
     });
     if (!user) return false;
-    return user.role?.name === "ADMIN";
+    return user.role?.name === "Admin";
   } catch (error) {
     console.error("verifyAdmin error:", error);
     return false;

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { verifyAdmin } from "@/lib/verifyadmin";
+import { getUserFromToken } from "@/lib/auth";
 
 export async function GET(req: Request) {
   try {
@@ -9,8 +9,10 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const token = authHeader.split(" ")[1];
-    const isAdmin = await verifyAdmin(token);
+    const token = req.headers.get("authorization")?.split(" ")[1] || "";
+    const user = await getUserFromToken(token);
+
+    const isAdmin = user?.role?.name === "Admin";
     if (!isAdmin) {
       return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }
@@ -33,8 +35,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const token = authHeader.split(" ")[1];
-    const isAdmin = await verifyAdmin(token);
+    const token = req.headers.get("authorization")?.split(" ")[1] || "";
+    const user = await getUserFromToken(token);
+
+    const isAdmin = user?.role?.name === "Admin";
     if (!isAdmin) {
       return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }
@@ -59,8 +63,10 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const token = authHeader.split(" ")[1];
-    const isAdmin = await verifyAdmin(token);
+    const token = req.headers.get("authorization")?.split(" ")[1] || "";
+    const user = await getUserFromToken(token);
+
+    const isAdmin = user?.role?.name === "Admin";
     if (!isAdmin) {
       return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }
@@ -85,8 +91,10 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const token = authHeader.split(" ")[1];
-    const isAdmin = await verifyAdmin(token);
+    const token = req.headers.get("authorization")?.split(" ")[1] || "";
+    const user = await getUserFromToken(token);
+
+    const isAdmin = user?.role?.name === "Admin";
     if (!isAdmin) {
       return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }

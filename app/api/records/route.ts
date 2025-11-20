@@ -62,8 +62,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(created);
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.error("POST /api/records error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
@@ -79,12 +79,30 @@ export async function GET(req: Request) {
 
     const userId = user.id;
 
-    const records = await prisma.record.findMany({
-      where: { userId },
-      orderBy: { date: "desc" },
-    });
+    if (user.role?.name === "Merchandiser") {
+      const records = await prisma.record.findMany({
+        where: { userId },
+        orderBy: { date: "desc" },
+      });
+      return NextResponse.json(records);
+    }
 
-    return NextResponse.json(records);
+    if (user.role?.name === "Admin") {
+      const records = await prisma.record.findMany({
+        orderBy: { date: "desc" },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+      return NextResponse.json(records);
+    }
+
   } catch (err) {
     console.error("GET /api/records error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

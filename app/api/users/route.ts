@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import jwt from "jsonwebtoken";
-import { verifyAdmin } from "@/lib/verifyadmin";
+import { getUserFromToken } from "@/lib/auth";
 
 export async function GET(req: Request) {
   try {
@@ -9,10 +8,10 @@ export async function GET(req: Request) {
     if (!authHeader || !authHeader.startsWith("Bearer "))
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const token = authHeader.split(" ")[1];
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+    const token = req.headers.get("authorization")?.split(" ")[1] || "";
+    const user = await getUserFromToken(token);
 
-    const isAdmin = await verifyAdmin(token);
+    const isAdmin = user?.role?.name === "Admin";
     if (!isAdmin) {
         return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }

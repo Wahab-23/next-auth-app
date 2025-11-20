@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifyToken } from "@/lib/auth"; // for user-level decoding
+import { verifyToken, getUserFromToken } from "@/lib/auth"; // for user-level decoding
 import { verifyAdmin } from "@/lib/verifyadmin"; // for admin check
 import bcrypt from "bcryptjs";
 
@@ -12,8 +12,10 @@ export async function DELETE(req: Request, context: { params: Promise<{ id: stri
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const token = authHeader.split(" ")[1];
-    const isAdmin = await verifyAdmin(token);
+    const token = req.headers.get("authorization")?.split(" ")[1] || "";
+    const user = await getUserFromToken(token);
+
+    const isAdmin = user?.role?.name === "Admin";
     if (!isAdmin) {
       return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }

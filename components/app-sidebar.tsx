@@ -4,7 +4,6 @@ import * as React from "react"
 import { useEffect, useState } from "react"
 import { ChevronRight, LogOut, Settings, Users, Home, BarChart } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { SearchForm } from "@/components/search-form"
 import {
   Collapsible,
   CollapsibleContent,
@@ -24,7 +23,6 @@ import {
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import Logo from "@/public/ishopping.png"
-import { title } from "process"
 
 // dynamic sidebar
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -60,25 +58,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: "Dashboard",
       icon: <Home className="h-4 w-4" />,
       items: [
-        { title: "Overview", url: "/dashboard" },
+        { title: "Overview", url: "/" },
       ],
     },
     {
       title: "Profile",
       icon: <Settings className="h-4 w-4" />,
       items: [
-        { title: "Edit Profile", url: "/dashboard/profile" },
+        { title: "Edit Profile", url: "/profile" },
       ],
     },
   ]
 
   const admin = [
     {
+      title: "Admin Tools",
+      icon: <BarChart className="h-4 w-4" />,
+      items: [
+        { title: "KPI Dashboard", url: "/admin/" },
+        { title: "Records", url: "/admin/records" },
+      ],
+    },
+    {
       title: "User Management",
       icon: <Users className="h-4 w-4" />,
       items: [
-        { title: "All Users", url: "/dashboard/users" },
-        { title: "Roles", url: "/dashboard/roles" },
+        { title: "All Users", url: "/admin/users" },
+        { title: "Add New User", url: "/admin/register" },
       ],
     },
   ]
@@ -88,15 +94,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: "Merchandiser Tools",
       icon: <BarChart className="h-4 w-4" />,
       items: [
-        { title: "Add New KPI", url: "/dashboard/kpi/merchandising" },
-        { title: "View KPI", url: "/dashboard/kpi" },
+        { title: "Add New KPI", url: "/kpi/merchandising" },
+        { title: "View KPI", url: "/kpi" },
       ],
     },
   ]
 
   // merge according to role
   let navData = [...common]
-  if (role === "ADMIN") navData = [...common, ...admin]
+  if (role === "Admin") navData = [...common, ...admin]
   else if (role === "Merchandiser") navData = [...Merchandiser, ...common]
   else navData = [...common]
 
@@ -110,7 +116,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           alt="logo"
           className="mx-auto mb-2 mt-2"
         />
-        <SearchForm />
       </SidebarHeader>
       <SidebarContent className="gap-0">
         {navData.map((group) => (
