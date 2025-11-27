@@ -40,8 +40,8 @@ export async function GET(req: Request) {
         });
 
         // Build per-user stats
-        const stats = merchandisers.map((m) => {
-            const userRecords = records.filter((r) => r.userId === m.id);
+        const stats = merchandisers.map((m: any) => {
+            const userRecords = records.filter((r: any) => r.userId === m.id);
 
             const totalUploads = userRecords.reduce((sum, r) => sum + r.equivalentUploads, 0);
 
