@@ -94,28 +94,35 @@ export default function UsersPage() {
 
         <CardContent>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm border">
-              <thead className="bg-gray-100 text-left">
-                <tr>
-                  <th className="p-3">Name</th>
-                  <th className="p-3">Email</th>
-                  <th className="p-3">Role</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3">Actions</th>
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr className="bg-gray-100 border-b">
+                  <th className="text-left p-3 font-semibold">Name</th>
+                  <th className="text-left p-3 font-semibold">Email</th>
+                  <th className="text-left p-3 font-semibold">Role</th>
+                  <th className="text-left p-3 font-semibold">Status</th>
+                  <th className="text-left p-3 font-semibold">Actions</th>
                 </tr>
               </thead>
 
               <tbody>
                 {users.map((u) => (
-                  <tr key={u.id} className="border-b hover:bg-gray-50">
-                    <td className="p-3 flex items-center gap-2">
-                      <UserCircle className="w-5 h-5 text-gray-500" />
-                      {u.name}
+                  <tr
+                    key={u.id}
+                    className="border-b hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="p-3">
+                      <div className="flex items-center gap-2">
+                        <UserCircle className="w-5 h-5 text-gray-500" />
+                        <span className="font-medium">{u.name}</span>
+                      </div>
                     </td>
 
-                    <td className="p-3 flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-gray-400" />
-                      {u.email}
+                    <td className="p-3">
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-gray-400" />
+                        {u.email}
+                      </div>
                     </td>
 
                     <td className="p-3">
@@ -128,31 +135,41 @@ export default function UsersPage() {
 
                     <td className="p-3">
                       {u.isActive ? (
-                        <Badge className="bg-green-600 hover:bg-green-700">Active</Badge>
+                        <Badge className="bg-green-600 hover:bg-green-700 text-white">
+                          Active
+                        </Badge>
                       ) : (
-                        <Badge className="bg-red-600 hover:bg-red-700">Inactive</Badge>
+                        <Badge className="bg-red-600 hover:bg-red-700 text-white">
+                          Inactive
+                        </Badge>
                       )}
                     </td>
 
-                    <td className="p-3 flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedUser(u);
-                          setShowEdit(true);
-                        }}
-                      >
-                        <Pencil className="w-4 h-4 mr-1" /> Edit
-                      </Button>
+                    <td className="p-3">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedUser(u);
+                            setShowEdit(true);
+                          }}
+                          className="flex items-center gap-1"
+                        >
+                          <Pencil className="w-4 h-4" />
+                          Edit
+                        </Button>
 
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => deleteUser(u.id)}
-                      >
-                        <Trash2 className="w-4 h-4 mr-1" /> Delete
-                      </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => deleteUser(u.id)}
+                          className="flex items-center gap-1"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Delete
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -163,6 +180,7 @@ export default function UsersPage() {
               <p className="text-center py-6 text-gray-500">No users found.</p>
             )}
           </div>
+
         </CardContent>
       </Card>
 

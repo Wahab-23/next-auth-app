@@ -31,11 +31,14 @@ import {
 } from "@/components/ui/select";
 
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function CreateUserPage() {
   const form = useForm({
     defaultValues: { name: "", email: "", password: "", roleId: "" },
   });
+
+  const router = useRouter();
 
   const [roles, setRoles] = useState<{ id: number; name: string }[]>([]);
 
@@ -75,7 +78,9 @@ export default function CreateUserPage() {
             ...values,
             roleId: Number(values.roleId),
         }),
-      });
+      }
+      
+    );
 
       const data = await res.json();
 
@@ -86,6 +91,7 @@ export default function CreateUserPage() {
 
       toast.success("User created successfully!");
       form.reset();
+      router.push("/admin/users");
     } catch (err) {
       console.error(err);
       toast.error("Failed to create user");
